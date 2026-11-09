@@ -11,13 +11,13 @@ they would in a production documentation set.
 
 | Area | What it shows | Samples |
 |------|---------------|---------|
-| Product content | Print-ready and digital in-box materials, localized | Quick-start box insert (EN/ES/FR), Product Availability Matrix |
+| Product content | Print-ready and digital in-box materials, localized | [MT-100 box insert (EN/ES)](product/mt100-box-insert.md), [Product Availability Matrix](product/availability-matrix.md) |
 | User and installation guides | Task-based guides for hardware and software, KB and video formats | MT-200 installation guide, MT-100 troubleshooting article, video script, Driver App user guide |
 | Release communications | Customer-ready release notes and a quarterly calendar | Release notes 4.2, Q1 2027 release calendar |
 | API and OEM documentation | Reference, integration guides, changelogs | MyFleet API reference, integration guide, OEM Connect setup guide, API changelog |
-| Localization | Translation workflow, vendor management, quality sign-off | Localization case study, vendor QA checklist, LQA scorecard |
+| Localization | Translation workflow, vendor management, quality sign-off | [EN to ES localization case study](localization/case-study-en-es.md), with intake log and LQA scorecard |
 | Cross-team collaboration | Turning engineering specs into customer language | Release 4.2 case study, content readiness checklist |
-| Content maintenance | Audits, retirement, consistency | Content audit and retirement log, style guide |
+| Content maintenance | Audits, retirement, consistency | [Content audit and retirement log](maintenance/content-audit-log.md), [style guide](about/style-guide.md) |
 
 ## How success is measured
 

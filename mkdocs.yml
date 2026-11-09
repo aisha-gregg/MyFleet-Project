@@ -43,3 +43,10 @@ nav:
   - Releases:
       - Release notes 4.2: releases/release-notes-4-2.md
       - Q1 2027 release calendar: releases/release-calendar.md
+  - Product content:
+      - MT-100 box insert (EN/ES): product/mt100-box-insert.md
+      - Product Availability Matrix: product/availability-matrix.md
+  - Localization:
+      - "Case study: EN to ES launch": localization/case-study-en-es.md
+  - Maintenance:
+      - Content audit log: maintenance/content-audit-log.md
