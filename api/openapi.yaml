@@ -1,0 +1,140 @@
+openapi: 3.0.3
+info:
+  title: MyFleet API
+  version: 2.4.0
+  description: |
+    The MyFleet API gives you access to vehicles, positions, trips, and drivers, and lets you subscribe to events with webhooks.
+    All data is fictional and for portfolio purposes.
+servers:
+  - url: https://api.myfleet.example/v2
+security:
+  - ApiKeyAuth: []
+paths:
+  /vehicles:
+    get:
+      summary: List vehicles
+      description: Returns the vehicles in your account, 50 per page by default.
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+        - name: group_id
+          in: query
+          description: Return only vehicles in this group.
+          schema: { type: string }
+      responses:
+        '200':
+          description: A page of vehicles.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Vehicle' } }
+                  next_cursor: { type: string, nullable: true, example: "eyJpZCI6MTIzfQ" }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /vehicles/{vehicle_id}/positions/latest:
+    get:
+      summary: Get latest position
+      description: Returns the most recent position reported by the vehicle's tracker or OEM Connect source.
+      parameters:
+        - name: vehicle_id
+          in: path
+          required: true
+          schema: { type: string, example: veh_8f2k1 }
+      responses:
+        '200':
+          description: The latest position.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Position' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /trips:
+    get:
+      summary: List trips
+      description: Returns trips that started within the given time range. The range can't be longer than 31 days.
+      parameters:
+        - { name: from, in: query, required: true, schema: { type: string, format: date-time }, description: "Start of range (ISO 8601, UTC)." }
+        - { name: to, in: query, required: true, schema: { type: string, format: date-time }, description: "End of range (ISO 8601, UTC)." }
+        - { name: vehicle_id, in: query, schema: { type: string } }
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: A page of trips.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Trip' } }
+                  next_cursor: { type: string, nullable: true }
+        '400': { $ref: '#/components/responses/BadRequest' }
+  /webhooks:
+    post:
+      summary: Create a webhook subscription
+      description: MyFleet sends a POST request to your URL each time a subscribed event occurs.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [url, events]
+              properties:
+                url: { type: string, format: uri, example: "https://example.com/myfleet/events" }
+                events:
+                  type: array
+                  items: { type: string, enum: [trip.started, trip.ended, geofence.entered, geofence.exited, vehicle.defect_reported] }
+      responses:
+        '201':
+          description: Subscription created. Store the `secret` to verify signatures; it is shown only once.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: string, example: whk_31ab }
+                  secret: { type: string, example: whsec_9c1e... }
+components:
+  securitySchemes:
+    ApiKeyAuth: { type: apiKey, in: header, name: X-API-Key }
+  parameters:
+    Limit: { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 200, default: 50 }, description: "Items per page." }
+    Cursor: { name: cursor, in: query, schema: { type: string }, description: "The `next_cursor` value from the previous page." }
+  schemas:
+    Vehicle:
+      type: object
+      properties:
+        id: { type: string, example: veh_8f2k1 }
+        registration: { type: string, example: AB12 CDE }
+        vin: { type: string, example: WF0XXXTTGXKA12345 }
+        group_id: { type: string, example: grp_north }
+        data_source: { type: string, enum: [tracker, oem_connect], description: "Where position data comes from." }
+    Position:
+      type: object
+      properties:
+        vehicle_id: { type: string }
+        latitude: { type: number, example: 53.4808 }
+        longitude: { type: number, example: -2.2426 }
+        speed_kmh: { type: number, example: 48 }
+        heading: { type: integer, minimum: 0, maximum: 359, example: 270 }
+        ignition: { type: boolean }
+        recorded_at: { type: string, format: date-time }
+    Trip:
+      type: object
+      properties:
+        id: { type: string, example: trp_00x91 }
+        vehicle_id: { type: string }
+        driver_id: { type: string, nullable: true, description: "Null when no driver was logged in." }
+        started_at: { type: string, format: date-time }
+        ended_at: { type: string, format: date-time }
+        distance_km: { type: number, example: 23.4 }
+    Error:
+      type: object
+      properties:
+        code: { type: string, example: invalid_range }
+        message: { type: string, example: "The time range can't be longer than 31 days." }
+  responses:
+    BadRequest: { description: The request is invalid., content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    Unauthorized: { description: The API key is missing or invalid., content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    NotFound: { description: The resource doesn't exist or you can't access it., content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
