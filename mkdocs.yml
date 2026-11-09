@@ -1,0 +1,45 @@
+site_name: MyFleet Documentation Portfolio
+site_url: https://aisha-gregg.github.io/MyFleet-Project/
+site_description: Technical writing samples for a fictional fleet telematics product line
+repo_url: https://github.com/aisha-gregg/MyFleet-Project
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - content.code.copy
+    - search.highlight
+  palette:
+    - scheme: default
+      primary: indigo
+      toggle: { icon: material/brightness-7, name: Dark mode }
+    - scheme: slate
+      primary: indigo
+      toggle: { icon: material/brightness-4, name: Light mode }
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - toc: { permalink: true }
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed: { alternate_style: true }
+nav:
+  - Home: index.md
+  - About MyFleet:
+      - Product brief: about/product-brief.md
+      - Style guide: about/style-guide.md
+      - Glossary: about/glossary.md
+  - Guides:
+      - MT-200 installation: guides/mt200-installation.md
+      - "KB: MT-100 vehicle not visible": guides/mt100-vehicle-not-visible.md
+      - MT-200 video script: guides/mt200-video-script.md
+      - Driver App user guide: guides/driver-app.md
+  - API & OEM:
+      - API reference: api/reference.md
+      - Integration guide: api/integration-guide.md
+      - OEM Connect setup: api/oem-connect.md
+      - API changelog: api/changelog.md
+  - Releases:
+      - Release notes 4.2: releases/release-notes-4-2.md
+      - Q1 2027 release calendar: releases/release-calendar.md
